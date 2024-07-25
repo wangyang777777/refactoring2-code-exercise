@@ -42,6 +42,25 @@
         }).format;
         for (let perf of invoice.performances) {
           const play = plays[perf.playID];
+          let thisAmount = amountFor(perf, play);
+
+          // add volume credits
+          volumeCredits += Math.max(perf.audience - 30, 0);
+          // add extra credit for every ten comedy attendees
+          if ("comedy" === play.type)
+            volumeCredits += Math.floor(perf.audience / 5);
+
+          // print line for this order
+          result += ` ${play.name}: ${format(thisAmount / 100)} (${
+            perf.audience
+          } seats)\n`;
+          totalAmount += thisAmount;
+        }
+        result += `Amount owed is ${format(totalAmount / 100)}\n`;
+        result += `You earned ${volumeCredits} credits\n`;
+        return result;
+
+        function amountFor(perf, play) {
           let thisAmount = 0;
 
           switch (play.type) {
@@ -61,25 +80,16 @@
             default:
               throw new Error(`unknown type: ${play.type}`);
           }
-
-          // add volume credits
-          volumeCredits += Math.max(perf.audience - 30, 0);
-          // add extra credit for every ten comedy attendees
-          if ("comedy" === play.type)
-            volumeCredits += Math.floor(perf.audience / 5);
-
-          // print line for this order
-          result += ` ${play.name}: ${format(thisAmount / 100)} (${
-            perf.audience
-          } seats)\n`;
-          totalAmount += thisAmount;
+          return thisAmount;
         }
-        result += `Amount owed is ${format(totalAmount / 100)}\n`;
-        result += `You earned ${volumeCredits} credits\n`;
-        return result;
       }
       let res = statement(invoices[0], plays);
       console.log(res);
     </script>
   </body>
 </html>
+
+<!-- 重构思路
+ 1.中间的那段 switch，提炼到一个函数里，注意哪些变量会离开原来的作用域，其中包含thisAmout、play、perf
+
+ -->
