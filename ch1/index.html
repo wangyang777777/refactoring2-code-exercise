@@ -60,22 +60,22 @@
         result += `You earned ${volumeCredits} credits\n`;
         return result;
 
-        function amountFor(perf, play) {
+        function amountFor(aPerformance, play) {
           let result = 0;
 
           switch (play.type) {
             case "tragedy":
               result = 40000;
-              if (perf.audience > 30) {
-                result += 1000 * (perf.audience - 30);
+              if (aPerformance.audience > 30) {
+                result += 1000 * (aPerformance.audience - 30);
               }
               break;
             case "comedy":
               result = 30000;
-              if (perf.audience > 20) {
-                result += 10000 + 500 * (perf.audience - 20);
+              if (aPerformance.audience > 20) {
+                result += 10000 + 500 * (aPerformance.audience - 20);
               }
-              result += 300 * perf.audience;
+              result += 300 * aPerformance.audience;
               break;
             default:
               throw new Error(`unknown type: ${play.type}`);
@@ -90,6 +90,7 @@
 </html>
 
 <!-- 重构思路
- 1.中间的那段 switch，提炼到一个函数里，注意哪些变量会离开原来的作用域，其中包含thisAmout、play、perf
+1.中间的那段 switch，提炼到一个函数里，注意哪些变量会离开原来的作用域，其中包含thisAmout、play、perf
 2. 将函数的返回值命名为 result
+3. 参数取名时，使用不定冠词来标识变量的类型
  -->
