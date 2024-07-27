@@ -49,6 +49,27 @@
         result += `You earned ${data.totalVolumeCredits} credits\n`;
         return result;
       }
+
+      function htmlStatement(invoice, plays) {
+        return renderHtml(invoice, plays);
+      }
+
+      function renderHtml() {
+        let result = `<h1>Statement for ${data.customer}</h1>\n`;
+        result += "<table>\n";
+        result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>";
+        for (let perf of data.performances) {
+          result += ` <tr><td>${perf.play.name}</td><td>${perf.audience}</td>`;
+          result += `<td>${usd(perf.amount / 100)}</td></tr>\n`;
+        }
+        result += "</table>\n";
+        result += `<p>Amount owed is <em>${
+          usd(data.totalAmount) / 100
+        }</em></p>\n`;
+        result += `<p>You earned <em>${data.totalVolumeCredits}</em> credits</p>\n`;
+        return result;
+      }
+
       function usd(aNumber) {
         return new Intl.NumberFormat("en-US", {
           style: "currency",
@@ -85,4 +106,5 @@
 19. 替换 renderPlainText中对 playFor 的所有引用点
 20. 把第一阶段的代码提炼到一个独立的函数里了
 21. 将createStatementData函数独立到createStatementData.js文件中
+22. 编写一个 html 版本的对账单，将usd放到顶层作用域
  -->
