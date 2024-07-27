@@ -44,6 +44,38 @@
         result += `You earned ${totalVolumeCredits()} credits\n`;
         return result;
 
+        function totalAmount() {
+          let result = 0;
+          for (let perf of invoice.performances) {
+            result += amountFor(perf);
+          }
+          return result;
+        }
+        function totalVolumeCredits() {
+          let result = 0;
+          for (let perf of invoice.performances) {
+            result += volumeCreditsFor(perf);
+          }
+          return result;
+        }
+        function usd(aNumber) {
+          return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2,
+          }).format(aNumber);
+        }
+        function volumeCreditsFor(perf) {
+          let result = 0;
+          result += Math.max(perf.audience - 30, 0);
+          // add extra credit for every ten comedy attendees
+          if ("comedy" === playFor(perf).type)
+            result += Math.floor(perf.audience / 5);
+          return result;
+        }
+        function playFor(aPerformance) {
+          return plays[aPerformance.playID];
+        }
         function amountFor(aPerformance) {
           let result = 0;
 
@@ -63,38 +95,6 @@
               break;
             default:
               throw new Error(`unknown type: ${playFor(aPerformance).type}`);
-          }
-          return result;
-        }
-        function playFor(aPerformance) {
-          return plays[aPerformance.playID];
-        }
-        function volumeCreditsFor(perf) {
-          let result = 0;
-          result += Math.max(perf.audience - 30, 0);
-          // add extra credit for every ten comedy attendees
-          if ("comedy" === playFor(perf).type)
-            result += Math.floor(perf.audience / 5);
-          return result;
-        }
-        function usd(aNumber) {
-          return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 2,
-          }).format(aNumber);
-        }
-        function totalVolumeCredits() {
-          let result = 0;
-          for (let perf of invoice.performances) {
-            result += volumeCreditsFor(perf);
-          }
-          return result;
-        }
-        function totalAmount() {
-          let result = 0;
-          for (let perf of invoice.performances) {
-            result += amountFor(perf);
           }
           return result;
         }
@@ -120,4 +120,5 @@
 11. 重构目标volumeCredits，拆分循环，将volumeCredits的累加过程分离出来，这样，变量声明就可以挪动到紧邻循环的位置
 12. 对 volumeCredits 的计算过程提炼函数，再应用内联变量手法内联 totalVolumeCredits 函数
 13. 重复同样的步骤来移除 totalAmmount 变量，下移变量声明语句，最后再提炼函数
+14. 欣赏代码全貌
  -->
