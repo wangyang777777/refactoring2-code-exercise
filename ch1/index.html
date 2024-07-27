@@ -32,6 +32,9 @@
         },
       ];
       function statement(invoice, plays) {
+        return renderPlainText(invoice, plays);
+      }
+      function renderPlainText(invoice, plays) {
         let result = `Statement for ${invoice.customer}\n`;
 
         for (let perf of invoice.performances) {
@@ -121,4 +124,5 @@
 12. 对 volumeCredits 的计算过程提炼函数，再应用内联变量手法内联 totalVolumeCredits 函数
 13. 重复同样的步骤来移除 totalAmmount 变量，下移变量声明语句，最后再提炼函数
 14. 欣赏代码全貌
+15. 将 statement函数的全部内容抽取到一个新的顶层函数中，命名为 renderPlainText
  -->
