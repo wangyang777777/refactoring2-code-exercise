@@ -42,7 +42,7 @@
         }).format;
         for (let perf of invoice.performances) {
           const play = playFor(perf);
-          let thisAmount = amountFor(perf, play);
+          let thisAmount = amountFor(perf);
 
           // add volume credits
           volumeCredits += Math.max(perf.audience - 30, 0);
@@ -60,10 +60,10 @@
         result += `You earned ${volumeCredits} credits\n`;
         return result;
 
-        function amountFor(aPerformance, play) {
+        function amountFor(aPerformance) {
           let result = 0;
 
-          switch (play.type) {
+          switch (playFor(aPerformance).type) {
             case "tragedy":
               result = 40000;
               if (aPerformance.audience > 30) {
@@ -78,7 +78,7 @@
               result += 300 * aPerformance.audience;
               break;
             default:
-              throw new Error(`unknown type: ${play.type}`);
+              throw new Error(`unknown type: ${playFor(aPerformance).type}`);
           }
           return result;
         }
@@ -97,4 +97,5 @@
 2. 将函数的返回值命名为 result
 3. 参数取名时，使用不定冠词来标识变量的类型
 4. 移出 play 变量，以查询取代临时变量
+5. 移出 play 参数，首先在 amountFor 函数内部使用新提炼的函数 playFor
  -->
