@@ -42,13 +42,8 @@
           } seats)\n`;
           totalAmount += amountFor(perf);
         }
-        let volumeCredits = 0;
-        for (let perf of invoice.performances) {
-          volumeCredits += volumeCreditsFor(perf);
-        }
-
         result += `Amount owed is ${usd(totalAmount / 100)}\n`;
-        result += `You earned ${volumeCredits} credits\n`;
+        result += `You earned ${totalVolumeCredits()} credits\n`;
         return result;
 
         function amountFor(aPerformance) {
@@ -91,6 +86,13 @@
             minimumFractionDigits: 2,
           }).format(aNumber);
         }
+        function totalVolumeCredits() {
+          let result = 0;
+          for (let perf of invoice.performances) {
+            result += volumeCreditsFor(perf);
+          }
+          return result;
+        }
       }
 
       let res = statement(invoices[0], plays);
@@ -111,4 +113,5 @@
 9. 移除 format 变量，典型的将函数赋值给临时变量的场景，更愿意将其替换为一个明确声明的函数
 10. format 函数名语义不太明确，起名为 usd
 11. 重构目标volumeCredits，拆分循环，将volumeCredits的累加过程分离出来，这样，变量声明就可以挪动到紧邻循环的位置
+12. 对 volumeCredits 的计算过程提炼函数，再应用内联变量手法内联 totalVolumeCredits 函数
  -->
