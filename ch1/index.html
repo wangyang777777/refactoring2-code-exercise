@@ -41,18 +41,13 @@
           minimumFractionDigits: 2,
         }).format;
         for (let perf of invoice.performances) {
-          let thisAmount = amountFor(perf);
-          // add volume credits
-          volumeCredits += Math.max(perf.audience - 30, 0);
-          // add extra credit for every ten comedy attendees
-          if ("comedy" === playFor(perf).type)
-            volumeCredits += Math.floor(perf.audience / 5);
+          volumeCredits += volumeCreditsFor(perf);
 
           // print line for this order
-          result += ` ${playFor(perf).name}: ${format(thisAmount / 100)} (${
-            perf.audience
-          } seats)\n`;
-          totalAmount += thisAmount;
+          result += ` ${playFor(perf).name}: ${format(
+            amountFor(perf) / 100
+          )} (${perf.audience} seats)\n`;
+          totalAmount += amountFor(perf);
         }
         result += `Amount owed is ${format(totalAmount / 100)}\n`;
         result += `You earned ${volumeCredits} credits\n`;
@@ -83,6 +78,14 @@
         function playFor(aPerformance) {
           return plays[aPerformance.playID];
         }
+        function volumeCreditsFor(perf) {
+          let result = 0;
+          result += Math.max(perf.audience - 30, 0);
+          // add extra credit for every ten comedy attendees
+          if ("comedy" === playFor(perf).type)
+            result += Math.floor(perf.audience / 5);
+          return result;
+        }
       }
       let res = statement(invoices[0], plays);
       console.log(res);
@@ -97,4 +100,6 @@
 4. 移出 play 变量，以查询取代临时变量
 5. 移出 play 参数，首先在 amountFor 函数内部使用新提炼的函数 playFor
 6. 内联变量手法替换 play 参数
+7. 内联变量手法替换 thisAmount 变量
+8. 将 volumeCredits 相关整段逻辑提炼到新函数中，直接返回 volumeCredits，同时返回的变量命名为 result
  -->
