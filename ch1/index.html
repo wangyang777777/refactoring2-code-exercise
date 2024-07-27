@@ -35,21 +35,16 @@
         let totalAmount = 0;
         let volumeCredits = 0;
         let result = `Statement for ${invoice.customer}\n`;
-        const format = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-          minimumFractionDigits: 2,
-        }).format;
         for (let perf of invoice.performances) {
           volumeCredits += volumeCreditsFor(perf);
 
           // print line for this order
-          result += ` ${playFor(perf).name}: ${format(
-            amountFor(perf) / 100
-          )} (${perf.audience} seats)\n`;
+          result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${
+            perf.audience
+          } seats)\n`;
           totalAmount += amountFor(perf);
         }
-        result += `Amount owed is ${format(totalAmount / 100)}\n`;
+        result += `Amount owed is ${usd(totalAmount / 100)}\n`;
         result += `You earned ${volumeCredits} credits\n`;
         return result;
 
@@ -86,7 +81,15 @@
             result += Math.floor(perf.audience / 5);
           return result;
         }
+        function usd(aNumber) {
+          return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2,
+          }).format(aNumber);
+        }
       }
+
       let res = statement(invoices[0], plays);
       console.log(res);
     </script>
@@ -102,4 +105,6 @@
 6. 内联变量手法替换 play 参数
 7. 内联变量手法替换 thisAmount 变量
 8. 将 volumeCredits 相关整段逻辑提炼到新函数中，直接返回 volumeCredits，同时返回的变量命名为 result
+9. 移除 format 变量，典型的将函数赋值给临时变量的场景，更愿意将其替换为一个明确声明的函数
+10. format 函数名语义不太明确，起名为 usd
  -->
